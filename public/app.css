@@ -1,0 +1,291 @@
+body {
+	margin: 0px;
+	border: 0px;
+	background: url("index-bg.png");
+	background-size: cover;
+}
+
+.nav::after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	background-color: #003366;
+	color: #fff;
+	text-align: center;
+	width: 100%;
+}
+
+.home h1, .home h2 {
+	font-family: sans-serif;
+	padding: 5px 0px 0px 0px;
+}
+
+.home {
+	border-radius: 50px;
+	margin: 200px 400px 0px 400px;
+	background-color: #fff;
+	color: #003366;
+	opacity: 0.8;
+	text-align: center;
+}
+
+.nav .left {
+	padding: 0px 850px 0px 0px;
+	color: red;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 20px;
+	font-family: fantasy;
+}
+
+.header {
+	border-bottom: 4px solid #fff;
+	background-color: #000;
+	padding: 0px 0px 0px 0px;
+	opacity: .65
+}
+
+.nav ul {
+	float: right;
+}
+
+.nav li {
+	color: red;
+	padding-bottom: 0px;
+	list-style: none;
+	float: left;
+	margin-right: 40px;
+}
+
+.nav .right {
+	color: #fff;
+	text-decoration: none;
+}
+
+.inputLabel {
+	display: inline-block;
+	width: 140px;
+	text-align: center;
+}
+
+.home button {
+	background-color: #006600;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 4px 4px 4px 4px;
+}
+
+.accountCreate {
+	border-radius: 50px;
+	margin: 200px 400px 0px 400px;
+	background-color: #fff;
+	color: #003366;
+	opacity: 0.8;
+	text-align: center;
+}
+
+.accountCreate .error {
+	display: none;
+	font-weight: bold;
+	background-color: #400;
+	margin: 0px 60px 0px 60px;
+	padding : 4px 0px 4px 0px;
+	border-radius: 50px;
+	color: #f00;
+}
+
+.accountCreate button {
+	background-color: #006600;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 10px 4px 4px 4px;
+}
+
+.accountCreate input {
+	background-color: #aaa;
+	border-radius: 10px;
+}
+
+.sidebar {
+	position: fixed;
+	width: 200px;
+	height: 100%;
+	background-color: #151719;
+	border-right: 2px solid #fff;
+}
+
+.sidebar a {
+	text-decoration: none;
+	color: #fff;
+}
+
+.sidebar li {
+	padding: 15px 10px;
+	margin: 30px 0px;
+	list-style: none;
+	border: 1px solid #fff;
+}
+
+.indexFloater {
+	position: fixed;
+	font-family: fantasy;
+	letter-spacing: 3px;
+	left: 660px;
+	top: 250px;
+	color: #c00000;
+	font-size: 55px;
+}
+
+.indexFloaterCaption {
+	position: fixed;
+	left: 660px;
+	top: 310px;
+	color: #c00000;
+	font-size: 19px;
+	letter-spacing: 1px;
+}
+
+.welcomeMessage {
+	color: #654321;
+	font-size: 20px;
+	margin: 10px 2px;
+}
+
+.trainSearch {
+	left: 220px;
+	text-align: center;
+	background-color: #fff;
+	border-radius: 50px;
+	opacity: 0.8;
+	margin: 100px 1100px 100px 100px;
+	border: 2px solid #000;
+}
+
+.trainSearch .inputLabelT {
+	font-size: 20px;
+	margin: 10px 0px;
+}
+
+.trainSearch input {
+	border-style: none;
+	color: #fff;
+	padding: 10px 10px;
+	background-color: #123456;
+	border-radius: 10px;
+	outline: none;
+}
+
+.trainSearch button {
+	margin: 20px 0px 10px 0px;
+	background-color: #006600;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 8px 8px 8px 8px;
+}
+
+.trainBookWrapper {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.trainBookListHeading {
+	padding: 10px 0px;
+	margin: 10px 0px;
+	text-align: center;
+	display: table-cell;
+	background-color: #808080;
+	color: #fff;
+	font-size: 20px;
+}
+
+.trainBookListMember {
+	display: table-cell;
+	font-family: ;
+	text-align: center;
+	background-color: #fff;
+	font-size: 25px;
+	border-top: 1px solid #000;
+	padding: 10px;
+}
+
+.trainBook button {
+	background-color: #00bfff;
+	outline: none;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 4px 4px 4px 4px;
+}
+
+.trainBook button:hover {
+	background-color: #0000ff;
+}
+
+.login {
+	border-radius: 50px;
+	margin: 200px 400px 0px 400px;
+	background-color: #fff;
+	color: #003366;
+	opacity: 0.8;
+	text-align: center;
+}
+
+.login button {
+	background-color: #006600;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 10px 4px 4px 4px;
+}
+
+.login input {
+	background-color: #aaa;
+	border-radius: 10px;
+}
+
+.login .error {
+	display: none;
+	font-weight: bold;
+	background-color: #400;
+	margin: 0px 60px 0px 60px;
+	padding : 4px 0px 4px 0px;
+	border-radius: 50px;
+	color: #f00;
+}
+
+.trainSearch .error {
+	display: none;
+	font-weight: bold;
+	background-color: #400;
+	margin: 0px 60px 0px 60px;
+	padding : 4px 0px 4px 0px;
+	border-radius: 50px;
+	color: #f00;
+}
+
+.selector {
+	font-family: Arial;
+	padding: 7px 7px;
+	background-color: DodgerBlue;
+	color: #fff;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+}
+
+.selector:hover {
+	background-color: blue;
+}

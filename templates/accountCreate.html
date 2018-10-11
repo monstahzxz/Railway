@@ -1,0 +1,40 @@
+<div class="accountCreate">
+	<h1>Create your account</h1>
+	<form id="accountCreate" action="/users" method="POST">
+		<div class="inputWrapper">
+			<div class="inputLabel">Username:</div>
+			<input type="text" name="username"/>
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">Password:</div>
+			<input type="password" name="password" placeholder="1234?"/>
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">Name:</div>
+			<input type="text" name="name"/>
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">E-mail:</div>
+			<input type="text" name="email"/>
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">Phone:</div>
+			<input type="text" name="phone"/>
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">Gender:</div>
+			<input type="radio" name="gender" value="M"/>Male
+			<input type="radio" name="gender" value="F"/>Female
+			<input type="radio" name="gender" value="O"/>Other
+		</div>
+		<div class="inputWrapper">
+			<div class="inputLabel">Date of Birth:</div>
+			<input type="date" name="dob"/>
+		</div>
+		<div class="inputWrapper">
+			<button type="submit">SIGNUP</button>
+		</div>
+		<div class="error">
+		</div>	
+	</form>	
+</div>
