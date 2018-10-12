@@ -34,7 +34,7 @@ helpers.fillTrainListForm = function(trainObject,arrival,departure,duration,done
 	var htmlStringIndex = '<div class="trainBookListMember">';
 	var htmlStringFooter = '</div>';
 	var finalHtmlString = '';
-	var htmlButton = '<div class="trainBookListMember"><button' + ' class="train' + done + '"">Check avialability and fare</button></div>';
+	var htmlButton = '<div class="trainBookListMember"><button' + ' class="train' + done + '">Check avialability and fare</button></div>';
 	var htmlClass = '<select class="selector"><option value="GN" selected="selected">General</option><option value="SL">Sleeper</option><option value="AC">AC 3 tier</option></select>';
 
 	finalHtmlString += htmlStringHeader + htmlStringIndex + trainObject.trainName + ' (' + trainObject.trainId + ')' + htmlStringFooter;

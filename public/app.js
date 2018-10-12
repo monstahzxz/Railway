@@ -110,7 +110,9 @@ app.loadTrainBookPage = function(){
 				var queryStringObject = {
 					'trainId' : trainId,
 					'classOfSeat' : classOfSeat,
-					'date' : date
+					'date' : date,
+					'to' : window.location.search.split('to=')[1].split('&')[0],
+					'from' : window.location.search.split('from=')[1].split('&')[0]
 				};
 				var path = 'http://localhost:3000/train/seats';
 				var method = 'get';
@@ -118,6 +120,12 @@ app.loadTrainBookPage = function(){
 				app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
 					if(statusCode == 200){
 						//add responsePayload.remainingSeats to html (edit trainBook by adding empty div and using innerHTML)
+						
+						//update train seats according to FROM location (seats add back up after passenger exits his station)
+						//make new table for each booking and subtract all from < this.from when returning remainingSeats
+						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn + boardingOut) (y)
+
+						document.querySelectorAll("." + train + " div")[5].innerHTML = responsePayload.remainingSeats;
 					}
 					else {
 						//window.location = '/';

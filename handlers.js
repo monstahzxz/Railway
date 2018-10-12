@@ -276,14 +276,20 @@ handlers.trainSeats = function(data, callback){
 		var date = typeof(data.queryStringObject.date) == 'string' ? data.queryStringObject.date : false;
 		var trainId = typeof(data.queryStringObject.trainId) == 'string' ? parseInt(data.queryStringObject.trainId) : false;
 		var classOfSeat = typeof(data.queryStringObject.classOfSeat) == 'string' ? data.queryStringObject.classOfSeat : false;
+		var to = typeof(data.queryStringObject.to) == 'string' ? data.queryStringObject.to : false;
+		var from = typeof(data.queryStringObject.from) == 'string' ? data.queryStringObject.from : false;
 
-		db.getSeats(trainId,classOfSeat,date,function(err,seats){
-			if(!err && seats){
-				callback(200,seats,'json');
-			}
-			else {
-				callback(500,{'Error' : 'An unknwon error has occurred'});
-			}
+		db.getTrainId(to,function(err,toId){
+			db.getTrainId(from,function(err,fromId){
+				db.getSeats(trainId,classOfSeat,date,fromId,toId,function(err,seats){
+					if(!err && seats){
+						callback(200,seats,'json');
+					}
+					else {
+						callback(500,{'Error' : 'An unknwon error has occurred'});
+					}
+				});
+			});
 		});
 	}
 };

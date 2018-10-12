@@ -101,19 +101,42 @@ db.verifyUser = function(username,password,callback){
 	});
 }
 
-db.getSeats = function(trainId,classOfSeat,date,callback){
+db.getSeats = function(trainId,classOfSeat,date,fromId,toId,callback){
 	var queryString = 'select * from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
-	var trainWithDataExists = 0; 
+	var trainWithDataExists = 0;
+	var totalSeats = 0; 
 	
 	db.connection.query(queryString, function(err, rows){
 		if(!err){
 			trainWithDataExists = rows.length > 0 ? 1 : 0;
 			if(trainWithDataExists){
 				queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
-		
+				
 				db.connection.query(queryString, function(err, rows){
-					if(!err){
-						callback(false,rows[0]);
+					if(!err && rows){
+						totalSeats = rows[0].remainingSeats;
+						queryString = 'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId <= ' + toId;
+						console.log(queryString);
+						db.connection.query(queryString, function(err, rows){
+							if(!err && rows){
+								var done = 0;
+								var remainingSeatsObject = {};
+								remainingSeatsObject.remainingSeats = totalSeats;
+							
+								rows.forEach(function(row){
+									remainingSeatsObject.remainingSeats += row.boardingOut;
+									remainingSeatsObject.remainingSeats -= row.boardingIn;
+									done++;
+								
+									if(done == rows.length){
+										callback(false,remainingSeatsObject);
+									}
+								});
+							}
+							else {
+								callback(500);
+							}
+						});
 					}
 					else {
 						callback(500);
@@ -131,10 +154,23 @@ db.getSeats = function(trainId,classOfSeat,date,callback){
 
 				db.connection.query(queryString, function(err, rows){
 					if(!err){
-						queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
+						queryString = 'select stationId,arrivalTime from stationsVisited where trainId = ' + trainId;
 						db.connection.query(queryString, function(err, rows){
 							if(!err && rows){
-								callback(false,rows[0]);
+								rows.forEach(function(row){
+									queryString = 'insert into stationsVisited values(' + trainId + ',' + row.stationId + ',"' + row.arrivalTime + '",0,0,"' + date + '");'; 
+									db.connection.query(queryString);
+								});
+
+								queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
+									db.connection.query(queryString, function(err, rows){
+										if(!err && rows){
+											callback(false,rows[0]);
+										}
+										else {
+											callback(500);
+										}
+									});
 							}
 							else {
 								callback(500);
