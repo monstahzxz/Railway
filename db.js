@@ -101,7 +101,7 @@ db.verifyUser = function(username,password,callback){
 	});
 }
 
-db.getSeats = function(trainId,classOfSeat,date,fromId,toId,callback){
+db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 	var queryString = 'select * from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
 	var trainWithDataExists = 0;
 	var totalSeats = 0; 
@@ -115,8 +115,10 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,callback){
 				db.connection.query(queryString, function(err, rows){
 					if(!err && rows){
 						totalSeats = rows[0].remainingSeats;
-						queryString = 'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId <= ' + toId;
-						console.log(queryString);
+						queryString = direction == 'up' ? 
+						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId < ' + toId :
+						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId > ' + toId;
+						
 						db.connection.query(queryString, function(err, rows){
 							if(!err && rows){
 								var done = 0;

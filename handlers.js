@@ -281,7 +281,8 @@ handlers.trainSeats = function(data, callback){
 
 		db.getTrainId(to,function(err,toId){
 			db.getTrainId(from,function(err,fromId){
-				db.getSeats(trainId,classOfSeat,date,fromId,toId,function(err,seats){
+				var direction = fromId - toId < 0 ? 'up' : 'down';
+				db.getSeats(trainId,classOfSeat,date,fromId,toId,direction,function(err,seats){
 					if(!err && seats){
 						callback(200,seats,'json');
 					}
