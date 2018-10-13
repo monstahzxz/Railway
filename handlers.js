@@ -336,31 +336,33 @@ handlers.trainSeats = function(data, callback){
 };
 
 handlers.trainConfirm = function(data, callback){
-	var username = typeof(data.payload.username) == 'string' ? data.payload.username : false;
-	var to = typeof(data.payload.to) == 'string' ? data.payload.to : false;
-	var from = typeof(data.payload.from) == 'string' ? data.payload.from : false;
-	var noOfPassengers = typeof(data.payload.noOfPassengers) == 'string' ? data.payload.noOfPassengers : false;
-	var trainId = typeof(data.payload.trainId) == 'string' ? data.payload.trainId : false;
-	var classOfSeat = typeof(data.payload.classOfSeat) == 'string' ? data.payload.classOfSeat : false;
-	var date = typeof(data.payload.date) == 'string' ? data.payload.date : false;
+	var bookingDetails = {};
+	
+	bookingDetails.username = typeof(data.payload.username) == 'string' ? data.payload.username : false;
+	bookingDetails.to = typeof(data.payload.to) == 'string' ? data.payload.to : false;
+	bookingDetails.from = typeof(data.payload.from) == 'string' ? data.payload.from : false;
+	bookingDetails.noOfPassengers = typeof(data.payload.noOfPassengers) == 'string' ? data.payload.noOfPassengers : false;
+	bookingDetails.trainId = typeof(data.payload.trainId) == 'string' ? data.payload.trainId : false;
+	bookingDetails.classOfSeat = typeof(data.payload.classOfSeat) == 'string' ? data.payload.classOfSeat : false;
+	bookingDetails.date = typeof(data.payload.date) == 'string' ? data.payload.date : false;
+	
 	var passengerDetails = {
 		'passengerNames' : [],
 		'passengerAges' : [],
 		'passengerGenders' : []
 	};
 
-	for(var i=0;i<noOfPassengers;++i){
+	for(var i=0;i<parseInt(bookingDetails.noOfPassengers);++i){
 		var passengerName = typeof(data.payload['passengerName' + i]) == 'string' ? data.payload['passengerName' + i] : false;
 		var passengerAge = typeof(data.payload['age' + i]) == 'string' ? data.payload['age' + i] : false;
 		var passengerGender = typeof(data.payload['gender' + i]) == 'string' ? data.payload['gender' + i] : false;
 
-		passengerDetails.passengerNames.push(passengerNames);
+		passengerDetails.passengerNames.push(passengerName);
 		passengerDetails.passengerAges.push(passengerAge);
 		passengerDetails.passengerGenders.push(passengerGender);
 	}
 
-	
-
+	//Do the actual booking with db
 };
 
 

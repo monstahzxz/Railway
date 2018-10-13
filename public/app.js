@@ -199,13 +199,15 @@ app.bindForms = function(){
 						var valueOfElement = elements[i].value;
 						var nameOfElement = elements[i].name;
 
-						if(elements[i].type =='radio' && valueOfElement){
+						if(elements[i].type =='radio' && elements[i].checked && valueOfElement){
 							payload[nameOfElement] = valueOfElement;
 						}
-						payload[nameOfElement] = valueOfElement;
+						else if(elements[i].type != 'radio'){
+							payload[nameOfElement] = valueOfElement;
+						}	
 					}
 				}
-				
+
 				var queryStringObject = method == 'GET' ? payload : {};
 				
 				if(formId == 'trainPassenger'){
