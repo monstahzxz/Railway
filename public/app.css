@@ -289,3 +289,23 @@ body {
 .selector:hover {
 	background-color: blue;
 }
+
+.trainBookListMember .seats {
+	color: #00aa00;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.trainBookListMember .fare {
+	color: #aa0000;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.trainBookListMember .seatsLabel {
+	font-size: 20px;
+}
+
+.trainBookListMember .fareLabel {
+	font-size: 20px;
+}

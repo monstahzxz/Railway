@@ -105,7 +105,13 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 	var queryString = 'select * from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
 	var trainWithDataExists = 0;
 	var totalSeats = 0; 
-	
+	var classPrices = {
+		'GN' : 40,
+		'SL' : 100,
+		'AC' : 200
+	};
+	var price = classPrices[classOfSeat] * (direction == 'up' ? toId - fromId : fromId - toId);
+
 	db.connection.query(queryString, function(err, rows){
 		if(!err){
 			trainWithDataExists = rows.length > 0 ? 1 : 0;
@@ -124,7 +130,8 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 								var done = 0;
 								var remainingSeatsObject = {};
 								remainingSeatsObject.remainingSeats = totalSeats;
-							
+								remainingSeatsObject.price = price;
+
 								rows.forEach(function(row){
 									remainingSeatsObject.remainingSeats += row.boardingOut;
 									remainingSeatsObject.remainingSeats -= row.boardingIn;
@@ -146,12 +153,6 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 				});
 			}
 			else {
-				var classPrices = {
-					'GN' : 40,
-					'SL' : 100,
-					'AC' : 200
-				};
-				
 				queryString = 'insert into trainSeats values(' + trainId + ',"' + date + '","' + classOfSeat + '",30,' + classPrices[classOfSeat] + ');';
 
 				db.connection.query(queryString, function(err, rows){
@@ -178,6 +179,7 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 								queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
 									db.connection.query(queryString, function(err, rows){
 										if(!err && rows){
+											rows[0].price = price;
 											callback(false,rows[0]);
 										}
 										else {
