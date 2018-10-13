@@ -125,7 +125,7 @@ app.loadTrainBookPage = function(){
 						//make new table for each booking and subtract all from < this.from when returning remainingSeats
 						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn + boardingOut) (y)
 
-						document.querySelectorAll("." + train + " div")[5].innerHTML = responsePayload.remainingSeats;
+						document.querySelectorAll("." + train + " div")[5].innerHTML = '<div>' + responsePayload.remainingSeats + '</div><div>fare</div><div><button class="train0">Book this train!</button></div>';
 					}
 					else {
 						//window.location = '/';

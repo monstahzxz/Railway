@@ -116,9 +116,9 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 					if(!err && rows){
 						totalSeats = rows[0].remainingSeats;
 						queryString = direction == 'up' ? 
-						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId < ' + toId :
-						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId > ' + toId;
-						
+						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId < ' + toId + ' and class = "' + classOfSeat + '";' :
+						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId > ' + toId + ' and class = "' + classOfSeat + '";';
+						console.log(queryString);						
 						db.connection.query(queryString, function(err, rows){
 							if(!err && rows){
 								var done = 0;
@@ -156,12 +156,16 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 
 				db.connection.query(queryString, function(err, rows){
 					if(!err){
-						queryString = 'select stationId,arrivalTime from stationsVisited where trainId = ' + trainId;
+						queryString = 'select DISTINCT stationId,arrivalTime from stationsVisited where trainId = ' + trainId;
 						db.connection.query(queryString, function(err, rows){
 							if(!err && rows){
-								rows.forEach(function(row){
-									queryString = 'insert into stationsVisited values(' + trainId + ',' + row.stationId + ',"' + row.arrivalTime + '",0,0,"' + date + '");'; 
-									db.connection.query(queryString);
+								var classes = ['GN','SL','AC'];
+
+								classes.forEach(function(classOfSeat){
+									rows.forEach(function(row){
+										queryString = 'insert into stationsVisited values(' + trainId + ',' + row.stationId + ',"' + row.arrivalTime + '",0,0,"' + date + '","' + classOfSeat + '");'; 
+										db.connection.query(queryString);
+									});
 								});
 
 								queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';

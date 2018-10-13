@@ -19,8 +19,7 @@ helpers.trainList = function(trainData, callback){
 	var date = typeof(trainData.date) == 'string' ? trainData.date.trim() : false;
 
 	db.getTrains(from,to,function(err,trains){
-		if(!err && trains){
-				
+		if(!err && trains.length > 0){	
 			callback(false,trains);
 		}
 		else {
