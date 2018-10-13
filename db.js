@@ -118,7 +118,7 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 						queryString = direction == 'up' ? 
 						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId < ' + toId + ' and class = "' + classOfSeat + '";' :
 						'select boardingIn,boardingOut from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '" and stationId > ' + toId + ' and class = "' + classOfSeat + '";';
-						console.log(queryString);						
+												
 						db.connection.query(queryString, function(err, rows){
 							if(!err && rows){
 								var done = 0;
@@ -158,14 +158,21 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 					if(!err){
 						queryString = 'select DISTINCT stationId,arrivalTime from stationsVisited where trainId = ' + trainId;
 						db.connection.query(queryString, function(err, rows){
+							rowsToBeAdded = rows;
 							if(!err && rows){
-								var classes = ['GN','SL','AC'];
+								queryString = 'select * from stationsVisited where trainId = ' + trainId + ' and date = "' + date + '";';
+								
+								db.connection.query(queryString, function(err, rows){
+									if(!err && rows.length == 0){
+										var classes = ['GN','SL','AC'];
 
-								classes.forEach(function(classOfSeat){
-									rows.forEach(function(row){
-										queryString = 'insert into stationsVisited values(' + trainId + ',' + row.stationId + ',"' + row.arrivalTime + '",0,0,"' + date + '","' + classOfSeat + '");'; 
-										db.connection.query(queryString);
-									});
+										classes.forEach(function(classOfSeat){
+											rowsToBeAdded.forEach(function(row){
+												queryString = 'insert into stationsVisited values(' + trainId + ',' + row.stationId + ',"' + row.arrivalTime + '",0,0,"' + date + '","' + classOfSeat + '");'; 
+												db.connection.query(queryString);		
+											});
+										});
+									}
 								});
 
 								queryString = 'select remainingSeats from trainSeats where trainId = ' + trainId + ' and date = "' + date + '" and class = "' + classOfSeat + '";';
