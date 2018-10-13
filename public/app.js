@@ -92,6 +92,35 @@ app.loadDataOnPage = function(){
 	else if(primaryClass == 'loginPage'){
 		app.loadLoginPage();
 	}
+	else if(primaryClass == 'trainPassengerPage'){
+		app.loadTrainPassengerPage();
+	}
+};
+
+app.loadTrainPassengerPage = function(){
+	if(app.config.loggedIn == 'false'){
+		localStorage.setItem('date',false);
+		window.location = '/';
+	}
+	else {
+		var select = document.querySelector("select");
+		var htmlTag = '<div class="ftHeader"><div class="inputWrapperT2"><div class="inpurLabelT2">Passenger Name: </div><input type="text" name="passengerName"/></div><div class="inputWrapperT2"><div class="inpurLabelT2">Age: </div><input type="text" name="age"/></div><div class="inputWrapperT2"><div class="inpurLabelT2">Gender: </div><input type="radio" name="gender" value="M"/>Male<input type="radio" name="gender" value="F"/>Female<input type="radio" name="gender" value="O"/>Other</div></div>'
+		var buttonTag = '<button type="submit">Confirm Booking!</button>';
+
+		select.addEventListener('change',function(e){
+			var noOfPassengers = select.value;
+			document.querySelector("form").innerHTML = '';
+
+			for(var i=0;i<noOfPassengers;++i){
+				var htmlTagNow = htmlTag.split('"passengerName"').join('"passengerName' + i + '"');
+				htmlTagNow = htmlTagNow.split('"age"').join('"age' + i + '"');
+				htmlTagNow = htmlTagNow.split('"gender"').join('"gender' + i + '"');
+				document.querySelector("form").innerHTML += htmlTagNow;
+			}
+
+			document.querySelector("form").innerHTML += buttonTag;
+		});
+	}
 };
 
 app.loadTrainBookPage = function(){
@@ -126,6 +155,11 @@ app.loadTrainBookPage = function(){
 						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn + boardingOut) (y)
 
 						document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabel">Available seats<div class="seats">' + responsePayload.remainingSeats + '</div></div><div class="fareLabel">Total fare<div class="fare">' + responsePayload.price + '</div></div><div><button class="train0">Book this train!</button></div>';
+						
+						bookTrainButton = document.querySelector("." + train + " button");
+						bookTrainButton.addEventListener('click',function(e){
+							window.location = 'train/passenger?trainId=' + trainId + '&date=' + date + '&class=' + classOfSeat + '&to=' + queryStringObject.to + '&from=' + queryStringObject.from;
+						});
 					}
 					else {
 						//window.location = '/';
@@ -173,6 +207,17 @@ app.bindForms = function(){
 				}
 				
 				var queryStringObject = method == 'GET' ? payload : {};
+				
+				if(formId == 'trainPassenger'){
+					payload.to = window.location.search.split('to=')[1].split('&')[0];
+					payload.from = window.location.search.split('from=')[1].split('&')[0];
+					payload.username = localStorage.getItem('username');
+					payload.noOfPassengers = document.querySelector("select").value;
+					payload.trainId = window.location.search.split('trainId=')[1].split('&')[0];
+					payload.classOfSeat = window.location.search.split('class=')[1].split('&')[0];
+					payload.date = window.location.search.split('date=')[1].split('&')[0];
+				}
+
 				//if(app.requestNeeded.indexOf(formId) > -1){
 					app.request(undefined,path,method,queryStringObject,payload,function(statusCode,responsePayload){
 						if(statusCode == 200){
@@ -208,6 +253,10 @@ app.formResponse = function(formId,requestPayload,responsePayload){
 	else if(formId == 'login'){
 		app.setSessionStatus('true',requestPayload.username);
 		window.location = '/index';
+	}
+
+	else if(formId == 'trainPassenger'){
+		window.location = 'train/booked';
 	}
 }
 

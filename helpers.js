@@ -28,6 +28,18 @@ helpers.trainList = function(trainData, callback){
 	});
 };
 
+helpers.fillFromToDiv = function(from, to, trainId){
+	var str = '<div class="ftLogoWrapper">';
+
+	str += '<div class="fromToLogo fromLogo">' + from + '</div>';
+	str += '<div class="fromToLogo arrowLogo">&xrarr;</div>'
+	str += '<div class="fromToLogo toLogo">' + to + '</div>';
+	str += '<div class="trainLogo">Train no.: ' + trainId + '</div>';
+	str += '</div>';
+
+	return str;
+}
+
 helpers.fillTrainListForm = function(trainObject,arrival,departure,duration,done,callback){
 	var htmlStringHeader = '<div class="trainBookWrapper train' + done + '">';
 	var htmlStringIndex = '<div class="trainBookListMember">';

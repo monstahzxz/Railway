@@ -309,3 +309,104 @@ body {
 .trainBookListMember .fareLabel {
 	font-size: 20px;
 }
+
+.trainPassenger .ftLogoWrapper {
+	background-color: #000;
+}
+
+.trainPassenger .fromToLogo {
+	display: inline-block;
+	color: #DC143C;
+	font-size: 50px;
+	font-weight: bold;
+	font-family: sans-serif;
+	margin: 10px 5px 0px 220px;
+}
+
+.trainPassenger .arrowLogo {
+	font-family: "wide-font";
+	font-size: 70px;
+}
+
+.trainPassenger .trainLogo {
+	display: inline;
+	margin: 670px;
+	background-color: #fff;
+	font-size: 30px;
+	color: #000;
+	border-radius: 3px;
+}
+
+.trainPassenger .ftSelectWrapper {
+	background-color: #bbb;
+	border-radius: 5px;
+}
+
+.trainPassenger .selectLogo {
+	display: inline;
+	color: DodgerBlue;
+	font-size: 30px;
+	margin: 2px 650px;
+}
+
+.trainPassenger select {
+	font-family: Arial;
+	padding: 7px 7px;
+	background-color: DodgerBlue;
+	color: #fff;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	margin: 5px 720px;
+}
+
+.trainPassenger select:hover {
+	background-color: blue;
+}
+
+.ftHeader {
+	display: table;
+	background-color: #fff;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.ftHeader .inputWrapperT2 {
+	display: table-cell;
+	color: #000;
+	text-align: center;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+	font-size: 20px;
+	padding: 10px;
+}
+
+.ftHeader .inputWrapperT2 input {
+	outline: none;
+}
+
+#trainPassenger button {
+	background-color: #006600;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 10px 700px;
+	outline: none;
+}
+
+#trainPassenger button:hover {
+	background-color: #00aa00;
+}
+
+.trainBooked {
+	background-color: #006600;
+	margin: 220px 50px;
+}
+
+.trainBooked div {
+	color: #fff;
+	padding: 10px 10px;
+	font-size: 25px;
+	text-align: center;
+}

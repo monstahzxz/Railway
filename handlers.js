@@ -191,6 +191,46 @@ handlers.trainBook = function(data, callback){
 	}
 };
 
+handlers.trainPassenger = function(data, callback){
+	if(data.method = 'get'){
+		var from = typeof(data.queryStringObject.from) == 'string' ? data.queryStringObject.from : false;
+		var to = typeof(data.queryStringObject.to) == 'string' ? data.queryStringObject.to : false;
+		var classOfSeat = typeof(data.queryStringObject.class) == 'string' ? data.queryStringObject.class : false;
+		var trainId = typeof(data.queryStringObject.trainId) == 'string' ? data.queryStringObject.trainId : false;
+
+		var templateData = {
+			'body.class' : 'trainPassengerPage',
+			'from-to' : helpers.fillFromToDiv(from,to,trainId)
+		}
+
+
+		helpers.getTemplate('trainPassenger',templateData,function(err,templateStr){
+			if(!err && templateStr){
+				callback(200,templateStr,'html');
+			}
+			else {
+				callback(404);
+			}
+		});
+	}		
+	else {
+		callback(405);
+	}
+};
+
+handlers.trainBooked = function(data, callback){
+	if(data.method == 'get'){
+		helpers.getTemplate('trainBooked',{},function(err,templateStr){
+			if(!err && templateStr){
+				callback(200,templateStr,'html');
+			}
+			else {
+				callback(404);
+			}
+		});
+	}
+};
+
 /*
 * API HANDLERS
 *
@@ -295,7 +335,33 @@ handlers.trainSeats = function(data, callback){
 	}
 };
 
+handlers.trainConfirm = function(data, callback){
+	var username = typeof(data.payload.username) == 'string' ? data.payload.username : false;
+	var to = typeof(data.payload.to) == 'string' ? data.payload.to : false;
+	var from = typeof(data.payload.from) == 'string' ? data.payload.from : false;
+	var noOfPassengers = typeof(data.payload.noOfPassengers) == 'string' ? data.payload.noOfPassengers : false;
+	var trainId = typeof(data.payload.trainId) == 'string' ? data.payload.trainId : false;
+	var classOfSeat = typeof(data.payload.classOfSeat) == 'string' ? data.payload.classOfSeat : false;
+	var date = typeof(data.payload.date) == 'string' ? data.payload.date : false;
+	var passengerDetails = {
+		'passengerNames' : [],
+		'passengerAges' : [],
+		'passengerGenders' : []
+	};
 
+	for(var i=0;i<noOfPassengers;++i){
+		var passengerName = typeof(data.payload['passengerName' + i]) == 'string' ? data.payload['passengerName' + i] : false;
+		var passengerAge = typeof(data.payload['age' + i]) == 'string' ? data.payload['age' + i] : false;
+		var passengerGender = typeof(data.payload['gender' + i]) == 'string' ? data.payload['gender' + i] : false;
+
+		passengerDetails.passengerNames.push(passengerNames);
+		passengerDetails.passengerAges.push(passengerAge);
+		passengerDetails.passengerGenders.push(passengerGender);
+	}
+
+	
+
+};
 
 
 module.exports = handlers;

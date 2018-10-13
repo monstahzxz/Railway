@@ -112,7 +112,10 @@ server.router = {
 	'train/search' : handlers.trainSearch,
 	'train/book' : handlers.trainBook,
 	'train/list' : handlers.trainList,
-	'train/seats' : handlers.trainSeats
+	'train/seats' : handlers.trainSeats,
+	'train/passenger' : handlers.trainPassenger,
+	'train/confirm' : handlers.trainConfirm,
+	'train/booked' : handlers.trainBooked
 };
 
 
