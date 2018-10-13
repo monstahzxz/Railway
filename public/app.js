@@ -258,6 +258,7 @@ app.formResponse = function(formId,requestPayload,responsePayload){
 	}
 
 	else if(formId == 'trainPassenger'){
+		console.log(responsePayload.bookingId);
 		window.location = 'train/booked';
 	}
 }

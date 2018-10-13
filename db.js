@@ -204,4 +204,59 @@ db.getSeats = function(trainId,classOfSeat,date,fromId,toId,direction,callback){
 	});
 };
 
+db.book = function(bookingDetails,passengerDetails,callback){
+	var queryString = '';
+	var bookingIdObject = {};
+
+	db.generateId(function(id){
+		bookingIdObject.bookingId = id;
+		queryString = 'insert into booking values(' + id + ',"' + bookingDetails.username + '",' + bookingDetails.trainId + ',' + bookingDetails.noOfPassengers + ',"' + bookingDetails.from + '","' + bookingDetails.to + '","' + bookingDetails.classOfSeat + '","' + bookingDetails.date + '");'; 
+		
+		db.connection.query(queryString, function(err){
+			if(err){
+				callback(500);
+			}
+		});
+
+		for(var i=0;i<bookingDetails.noOfPassengers;++i){
+			queryString = 'insert into bookingInfo values(' + id + ',"' + passengerDetails.passengerNames[i] + '",' + passengerDetails.passengerAges[i] + ',"' + passengerDetails.passengerGenders[i] + '");';
+			db.connection.query(queryString, function(err){
+				if(err){
+					callback(500);
+				}
+			});
+		}
+	});
+
+	db.getTrainId(bookingDetails.from,function(err,fromId){
+		db.getTrainId(bookingDetails.to,function(err,toId){
+			queryString = 'update stationsVisited set boardingIn = boardingIn + 1 where trainId = ' + bookingDetails.trainId + ' and stationId = ' + fromId + ' and date = "' + bookingDetails.date + '" and class = "' + bookingDetails.classOfSeat + '";';
+			db.connection.query(queryString, function(err){
+				if(err){
+					callback(500);
+				}
+			});
+
+			queryString = 'update stationsVisited set boardingOut = boardingOut + 1 where trainId = ' + bookingDetails.trainId + ' and stationId = ' + toId + ' and date = "' + bookingDetails.date + '" and class = "' + bookingDetails.classOfSeat + '";';
+			db.connection.query(queryString, function(err){
+				if(err){
+					callback(500);
+				}
+			});	
+		});
+	});
+
+	callback(200,bookingIdObject);
+};
+
+db.generateId = function(callback){
+	var id = 0;
+
+	for(var i=0;i<5;++i){
+		id = id * 10 + (Math.floor((Math.random() * 10) + 1));
+	}
+
+	callback(id);	
+};
+
 module.exports = db;

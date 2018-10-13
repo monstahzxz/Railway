@@ -159,5 +159,4 @@ helpers.getStaticAsset = function(fileName,callback){
 	}
 };
 
-
 module.exports = helpers;
