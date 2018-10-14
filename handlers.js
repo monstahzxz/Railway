@@ -220,7 +220,11 @@ handlers.trainPassenger = function(data, callback){
 
 handlers.trainBooked = function(data, callback){
 	if(data.method == 'get'){
-		helpers.getTemplate('trainBooked',{},function(err,templateStr){
+		var templateData = {
+			'body.class' : 'trainBookedPage'
+		}
+
+		helpers.getTemplate('trainBooked',templateData,function(err,templateStr){
 			if(!err && templateStr){
 				callback(200,templateStr,'html');
 			}

@@ -231,7 +231,7 @@ db.book = function(bookingDetails,passengerDetails,callback){
 	db.getTrainId(bookingDetails.from,function(err,fromId){
 		db.getTrainId(bookingDetails.to,function(err,toId){
 			queryString = 'update stationsVisited set boardingIn = boardingIn + ' + bookingDetails.noOfPassengers + ' where trainId = ' + bookingDetails.trainId + ' and stationId = ' + fromId + ' and date = "' + bookingDetails.date + '" and class = "' + bookingDetails.classOfSeat + '";';
-			console.log(queryString);
+
 			db.connection.query(queryString, function(err){
 				if(err){
 					callback(500);
@@ -247,7 +247,7 @@ db.book = function(bookingDetails,passengerDetails,callback){
 		});
 	});
 
-	callback(200,bookingIdObject);
+	callback(bookingIdObject);
 };
 
 db.generateId = function(callback){

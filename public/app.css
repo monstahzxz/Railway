@@ -306,6 +306,10 @@ body {
 	font-size: 20px;
 }
 
+.trainBookListMember .seatsLabelNull {
+	font-size: 20px;
+}
+
 .trainBookListMember .fareLabel {
 	font-size: 20px;
 }

@@ -95,6 +95,21 @@ app.loadDataOnPage = function(){
 	else if(primaryClass == 'trainPassengerPage'){
 		app.loadTrainPassengerPage();
 	}
+	else if(primaryClass == 'trainBookedPage'){
+		app.loadTrainBookedPage();
+	}
+};
+
+app.loadTrainBookedPage = function(){
+	if(app.config.loggedIn == 'false'){
+		localStorage.setItem('date',false);
+		localStorage.setItem('bookingId',false);
+		window.location = '/';
+	}
+	else {
+		document.querySelector(".fillId").innerHTML = document.querySelector(".fillId").innerHTML.replace('{bookingId}',localStorage.getItem('bookingId'));
+		localStorage.setItem('bookingId',false);
+	}
 };
 
 app.loadTrainPassengerPage = function(){
@@ -149,20 +164,24 @@ app.loadTrainBookPage = function(){
 				app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
 					if(statusCode == 200){
 						//add responsePayload.remainingSeats to html (edit trainBook by adding empty div and using innerHTML)
-						
 						//update train seats according to FROM location (seats add back up after passenger exits his station)
 						//make new table for each booking and subtract all from < this.from when returning remainingSeats
 						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn + boardingOut) (y)
-
-						document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabel">Available seats<div class="seats">' + responsePayload.remainingSeats + '</div></div><div class="fareLabel">Total fare<div class="fare">' + responsePayload.price + '</div></div><div><button class="train0">Book this train!</button></div>';
+						if(responsePayload.remainingSeats > 0){
+							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabel">Available seats<div class="seats">' + responsePayload.remainingSeats + '</div></div><div class="fareLabel">Total fare<div class="fare">' + responsePayload.price + '</div></div><div><button class="train0">Book this train!</button></div>';
 						
-						bookTrainButton = document.querySelector("." + train + " button");
-						bookTrainButton.addEventListener('click',function(e){
-							window.location = 'train/passenger?trainId=' + trainId + '&date=' + date + '&class=' + classOfSeat + '&to=' + queryStringObject.to + '&from=' + queryStringObject.from;
-						});
+							bookTrainButton = document.querySelector("." + train + " button");
+							bookTrainButton.addEventListener('click',function(e){
+								window.location = 'train/passenger?trainId=' + trainId + '&class=' + classOfSeat + '&to=' + queryStringObject.to + '&from=' + queryStringObject.from;
+							});	
+						}
+						else {
+							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabelNull">Available seats<div class="seats">0</div></div>';
+
+						}
 					}
 					else {
-						//window.location = '/';
+						window.location = '/';
 					}
 				});
 			});
@@ -217,7 +236,7 @@ app.bindForms = function(){
 					payload.noOfPassengers = document.querySelector("select").value;
 					payload.trainId = window.location.search.split('trainId=')[1].split('&')[0];
 					payload.classOfSeat = window.location.search.split('class=')[1].split('&')[0];
-					payload.date = window.location.search.split('date=')[1].split('&')[0];
+					payload.date = localStorage.getItem('date');
 				}
 
 				//if(app.requestNeeded.indexOf(formId) > -1){
@@ -258,7 +277,7 @@ app.formResponse = function(formId,requestPayload,responsePayload){
 	}
 
 	else if(formId == 'trainPassenger'){
-		console.log(responsePayload.bookingId);
+		localStorage.setItem('bookingId',responsePayload.bookingId);
 		window.location = 'train/booked';
 	}
 }
