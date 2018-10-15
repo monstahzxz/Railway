@@ -115,10 +115,17 @@ server.router = {
 	'train/seats' : handlers.trainSeats,
 	'train/passenger' : handlers.trainPassenger,
 	'train/confirm' : handlers.trainConfirm,
-	'train/booked' : handlers.trainBooked
+	'train/booked' : handlers.trainBooked,
+	'history' : handlers.history
 };
 
 
-server.httpServer.listen(config.httpPort,function(){
-	console.log('\x1b[36m%s\x1b[0m',"The server is now listening on " + config.httpPort);
-})
+server.init = function(){
+	server.httpServer.listen(config.httpPort,function(){
+		console.log('\x1b[36m%s\x1b[0m',"The server is now listening on " + config.httpPort);
+	});
+};
+
+
+
+module.exports = server;

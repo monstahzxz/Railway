@@ -235,6 +235,46 @@ handlers.trainBooked = function(data, callback){
 	}
 };
 
+handlers.history = function(data, callback){
+	if(data.method == 'get'){
+		var username = typeof(data.queryStringObject.username) == 'string' ? data.queryStringObject.username : false;
+		var templateData = {
+			'body.class' : 'historyPage', 
+			'trains' : '<div class="historyMember">No bookings yet!</div>'
+		};
+
+		db.getHistory(username,function(err, trainsWithoutNames){
+			if(!err){
+				db.getTrainName(trainsWithoutNames,function(err, trains){
+					db.classifyTrainStatus(trains,function(err, trainsWithStatus){
+						helpers.fillHistoryListForm(trainsWithStatus,function(htmlStr){
+							templateData.trains = htmlStr;
+							helpers.getTemplate('history',templateData,function(err,templateStr){
+								if(!err && templateStr){
+									callback(200,templateStr,'html');
+								}
+								else {
+									callback(404);
+								}
+							});
+						});
+					});
+				});
+			}
+			else {
+				helpers.getTemplate('history',templateData,function(err,templateStr){
+					if(!err && templateStr){
+						callback(200,templateStr,'html');
+					}
+					else {
+						callback(404);
+					}
+				});
+			}
+		});
+	}	
+};
+
 /*
 * API HANDLERS
 *
@@ -366,7 +406,7 @@ handlers.trainConfirm = function(data, callback){
 		passengerDetails.passengerGenders.push(passengerGender);
 	}
 	//Do the actual booking with db
-	db.book(bookingDetails,passengerDetails,function(bookingIdObject){
+	db.book(bookingDetails,passengerDetails,function(err,bookingIdObject){
 		callback(200,bookingIdObject,'json');
 	});
 };

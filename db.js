@@ -76,7 +76,6 @@ db.getTrainId = function(stationName,callback){
 
 db.getTime = function(trainId,stationName,callback){
 	var queryString = 'select arrivalTime from stationsVisited where trainId = ' + trainId + ' and stationId = ANY(select stationId from stations where stationName = "' + stationName +'");'
-	var time = '';
 
 	db.connection.query(queryString, function(err, rows){
 		if(!err && rows){
@@ -247,7 +246,7 @@ db.book = function(bookingDetails,passengerDetails,callback){
 		});
 	});
 
-	callback(bookingIdObject);
+	callback(false,bookingIdObject);
 };
 
 db.generateId = function(callback){
@@ -258,6 +257,70 @@ db.generateId = function(callback){
 	}
 
 	callback(id);	
+};
+
+db.getHistory = function(username,callback){
+	var queryString = 'select * from bookingMask where username = "' + username + '";';
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err && rows.length > 0){
+			callback(false,rows);
+		}
+		else {
+			callback(500);
+		}
+	});
+};
+
+db.getTrainName = function(trainsWithoutNames,callback){
+	var trains = trainsWithoutNames;
+	var queryString = '';
+	var done = 0;
+
+	trainsWithoutNames.forEach(function(trainWithoutNames){
+		queryString = 'select trainName from trains where trainId = ' + trainWithoutNames.trainId + ';';
+		db.connection.query(queryString, function(err, rows){
+			if(!err){
+				trains[done].trainName = rows[0].trainName;
+				++done;
+
+				if(done == trains.length){
+					callback(false,trains);
+				}
+			}
+			else {
+				callback(500);
+			}
+		});
+	});
+};
+
+db.classifyTrainStatus = function(trains,callback){
+	var trainsWithStatus = trains;
+	var queryString = '';
+	var done = 0;
+
+	trains.forEach(function(train){
+		queryString = 'select trainId from booking where bookingId = ' + train.bookingId + ';';
+		db.connection.query(queryString, function(err, rows){
+			if(!err && rows.length > 0){
+				trainsWithStatus[done].status = 'Booked';
+				++done;
+			
+				if(done == trainsWithStatus.length){
+					callback(false,trainsWithStatus);
+				}
+			}
+			else {
+				trainsWithStatus[done].status = 'Cancelled';
+				++done;
+
+				if(done == trainsWithStatus.length){
+					callback(false,trainsWithStatus);
+				}
+			}
+		});
+	});
 };
 
 module.exports = db;

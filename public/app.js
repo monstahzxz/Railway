@@ -100,11 +100,10 @@ app.loadDataOnPage = function(){
 	}
 };
 
+
 app.loadTrainBookedPage = function(){
 	if(app.config.loggedIn == 'false'){
-		localStorage.setItem('date',false);
-		localStorage.setItem('bookingId',false);
-		window.location = '/';
+		app.logUserOut();
 	}
 	else {
 		document.querySelector(".fillId").innerHTML = document.querySelector(".fillId").innerHTML.replace('{bookingId}',localStorage.getItem('bookingId'));
@@ -114,8 +113,7 @@ app.loadTrainBookedPage = function(){
 
 app.loadTrainPassengerPage = function(){
 	if(app.config.loggedIn == 'false'){
-		localStorage.setItem('date',false);
-		window.location = '/';
+		app.logUserOut();
 	}
 	else {
 		var select = document.querySelector("select");
@@ -140,8 +138,7 @@ app.loadTrainPassengerPage = function(){
 
 app.loadTrainBookPage = function(){
 	if(app.config.loggedIn == 'false'){
-		localStorage.setItem('date',false);
-		window.location = '/';
+		app.logUserOut();
 	}
 	else {
 		var buttons = document.querySelectorAll("button");
@@ -191,10 +188,11 @@ app.loadTrainBookPage = function(){
 
 app.loadIndexPage = function(){
 	if(app.config.loggedIn == 'false'){
-		window.location = '/';
+		app.logUserOut();
 	}
 	else {
 		document.querySelector(".welcomeMessage").innerHTML = 'Welcome ' + app.config.username + '!';
+		document.querySelectorAll(".sidebar li")[1].innerHTML = document.querySelectorAll(".sidebar li")[1].innerHTML.replace('/history','/history?username=' + app.config.username);
 	}
 };
 
@@ -299,6 +297,8 @@ app.getSessionStatus = function(){
 app.setSessionStatus = function(setState,setUsername){
 	localStorage.setItem('username',setUsername);
 	localStorage.setItem('loggedIn',setState);
+	localStorage.setItem('date',false);
+	localStorage.setItem('bookingId',false);
 };
 
 app.logUserOut = function(){

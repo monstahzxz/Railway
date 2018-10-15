@@ -40,6 +40,32 @@ helpers.fillFromToDiv = function(from, to, trainId){
 	return str;
 }
 
+helpers.fillHistoryListForm = function(trains,callback){
+	var finalHtmlString = '';
+	var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	
+	for(var i=0;i<trains.length;++i){
+		var htmlStringHeader = '<div class="historyWrapper">';
+		var htmlStringIndex = '<div class="historyMember">';
+		var htmlStringFooter = '</div>';
+
+		trains[i].date.setTime(trains[i].date.getTime() + (5.5 * 60 * 60 * 1000));
+		trains[i].date = JSON.stringify(trains[i].date).split('"')[1].split('T')[0].split('-')[2] + ' ' + months[trains[i].date.getMonth()] + ' ' + JSON.stringify(trains[i].date).split('"')[1].split('T')[0].split('-')[0];
+
+		finalHtmlString += htmlStringHeader + htmlStringIndex + trains[i].bookingId + htmlStringFooter;
+		finalHtmlString += htmlStringIndex + trains[i].trainName + ' (' + trains[i].trainId + ')' + htmlStringFooter;
+		finalHtmlString += htmlStringIndex + trains[i].date + htmlStringFooter;
+		finalHtmlString += htmlStringIndex + trains[i].no_of_passengers + htmlStringFooter;
+		finalHtmlString += htmlStringIndex + trains[i].class + htmlStringFooter;
+		finalHtmlString += '<div class="historyMember ';
+		finalHtmlString += trains[i].status == 'Booked' ? 'booked">' : 'cancelled">';
+		finalHtmlString += trains[i].status + htmlStringFooter;
+		finalHtmlString += htmlStringFooter;
+	}
+
+	callback(finalHtmlString);
+};
+
 helpers.fillTrainListForm = function(trainObject,arrival,departure,duration,done,callback){
 	var htmlStringHeader = '<div class="trainBookWrapper train' + done + '">';
 	var htmlStringIndex = '<div class="trainBookListMember">';

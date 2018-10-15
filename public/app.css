@@ -428,3 +428,39 @@ body {
 	font-size: 25px;
 	text-align: center;
 }
+
+.historyWrapper {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.historyHeading {
+	padding: 10px 0px;
+	margin: 10px 0px;
+	text-align: center;
+	display: table-cell;
+	background-color: #808080;
+	color: #fff;
+	font-size: 20px;
+}
+
+.historyMember {
+	display: table-cell;
+	font-family: ;
+	text-align: center;
+	background-color: #fff;
+	font-size: 25px;
+	border-top: 1px solid #000;
+	padding: 10px;
+}
+
+.cancelled {
+	color: red;
+	font-weight: bold;
+}
+
+.booked {
+	color: green;
+	font-weight: bold;
+}
