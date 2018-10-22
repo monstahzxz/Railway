@@ -8,4 +8,7 @@ app.init = function(){
 	workers.init();
 };
 
+//ADD ERROR MESSAGES FOR ALL HTMLs
+//CHECK FOR BUGS
+
 app.init();

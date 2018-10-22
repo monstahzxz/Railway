@@ -100,6 +100,36 @@ handlers.login = function(data, callback){
 	}
 };
 
+handlers.cancel = function(data, callback){
+	if(data.method == 'get'){
+		helpers.getTemplate('trainCancel',{},function(err,templateStr){
+			if(!err && templateStr){
+				callback(200,templateStr,'html');
+			}
+			else {
+				callback(404);
+			}
+		});
+	}
+};
+
+handlers.trainCancelled = function(data, callback){
+	if(data.method == 'get'){
+		var templateData = {
+			'body.class' : 'trainCancelledPage'
+		};
+
+		helpers.getTemplate('trainCancelled',templateData,function(err,templateStr){
+			if(!err && templateStr){
+				callback(200,templateStr,'html');
+			}
+			else {
+				callback(404);
+			}
+		});
+	}
+};
+
 handlers.accountCreate = function(data, callback){
 	var templateData = {
 		'body.class' : 'accountCreatePage'
@@ -409,6 +439,41 @@ handlers.trainConfirm = function(data, callback){
 	db.book(bookingDetails,passengerDetails,function(err,bookingIdObject){
 		callback(200,bookingIdObject,'json');
 	});
+};
+
+handlers.trainCancel = function(data, callback){
+	var bookingId = typeof(data.payload.bId) == 'string' && data.payload.bId.length == 5 || 6 ? data.payload.bId.trim() : false;
+
+	if(bookingId){
+		db.cancel(bookingId,function(err,refundObject){
+			if(!err){
+				callback(200,refundObject,'json');
+			}
+			else {
+				if(err == 400){
+					callback(404,{"Error" : "Invalid booking ID"});
+				}
+				else {
+					callback(500,{'Error' : 'An unknwon error has occurred'});
+				}
+			}
+		});
+	}
+};
+
+handlers.trainGetPrice = function(data, callback){
+	if(data.method == 'get'){
+		var bookingId = typeof(data.queryStringObject.bId) == 'string' ? data.queryStringObject.bId : false;
+
+		db.getPrice(bookingId,function(err,priceObject){
+			if(!err){
+				callback(200,priceObject,'json');
+			}
+			else {
+				callback(404,{"Error" : "An unknown error has occured"});
+			}
+		});
+	}
 };
 
 

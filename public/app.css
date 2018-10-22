@@ -429,6 +429,16 @@ body {
 	text-align: center;
 }
 
+.trainBooked button {
+	background-color: #fff;
+	font-weight: bold;
+	padding: 10px 10px 10px 10px;
+	color: #000;
+	border: none;
+	border-radius: 10px;
+	margin: 4px 4px 4px 4px;
+}
+
 .historyWrapper {
 	display: table;
 	width: 100%;
@@ -463,4 +473,72 @@ body {
 .booked {
 	color: green;
 	font-weight: bold;
+}
+
+.trainCancel {
+	text-align: center;
+	background-color: #fff;
+	border-radius: 50px;
+	opacity: 0.8;
+	margin: 100px 900px 100px 270px;
+	border: 2px solid #000;
+}
+
+.trainCancel .cancelLabel {
+	font-size: 20px;
+	margin: 10px 0px;
+}
+
+.trainCancel input {
+	border-style: none;
+	color: #fff;
+	padding: 10px 10px;
+	background-color: #123456;
+	border-radius: 10px;
+	outline: none;
+	margin-bottom: 10px;
+}
+
+.trainCancel .cancelNotice {
+	position: absolute;
+	font-size: 20px;
+	display: inline;
+	font-weight: bold;
+	color: #900;
+	background-color: #808080;
+	padding: 50px 50px;
+	top: 350px;
+	left: 100px;
+	border-radius: 20%;
+}
+
+.trainCancel button {
+	margin: 10px 0px 10px 0px;
+	background-color: #660000;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 8px 8px 8px 8px;
+}
+
+.trainCancelled {
+	background-color: #006600;
+	margin: 220px 50px;
+}
+
+.trainCancelled div {
+	color: #fff;
+	padding: 10px 10px;
+	font-size: 25px;
+	text-align: center;
+}
+
+.trainCancelled button {
+	background-color: #fff;
+	font-weight: bold;
+	padding: 10px 10px 10px 10px;
+	color: #000;
+	border: none;
+	border-radius: 10px;
+	margin: 4px 4px 4px 4px;
 }

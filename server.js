@@ -116,7 +116,11 @@ server.router = {
 	'train/passenger' : handlers.trainPassenger,
 	'train/confirm' : handlers.trainConfirm,
 	'train/booked' : handlers.trainBooked,
-	'history' : handlers.history
+	'history' : handlers.history,
+	'cancel' : handlers.cancel,
+	'train/cancel' : handlers.trainCancel,
+	'train/cancelled' : handlers.trainCancelled,
+	'train/getPrice' : handlers.trainGetPrice
 };
 
 

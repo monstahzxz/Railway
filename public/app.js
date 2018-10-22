@@ -2,7 +2,6 @@ var app = {};
 
 
 app.config = {};
-
 app.requestNeeded = ['accountCreate','login'];
 
 app.request = function(headers,path,method,queryStringObject,payload,callback){
@@ -98,16 +97,54 @@ app.loadDataOnPage = function(){
 	else if(primaryClass == 'trainBookedPage'){
 		app.loadTrainBookedPage();
 	}
+	else if(primaryClass == 'trainCancelledPage'){
+		app.loadTrainCancelledPage();
+	}
 };
 
+
+app.loadTrainCancelledPage = function(){
+	if(app.config.loggedIn == 'false'){
+		app.logUserOut();
+	}
+	else {
+		var refund = localStorage.getItem('refund');
+		
+		document.querySelector(".cancelledRefund").innerHTML = document.querySelector(".cancelledRefund").innerHTML.replace('{refund}',parseFloat(refund).toFixed(2));
+		localStorage.setItem('refund',false);
+
+		var button = document.querySelector("button");
+
+		button.addEventListener('click',function(e){
+			window.location = '/index';
+		});
+	}
+};
 
 app.loadTrainBookedPage = function(){
 	if(app.config.loggedIn == 'false'){
 		app.logUserOut();
 	}
 	else {
-		document.querySelector(".fillId").innerHTML = document.querySelector(".fillId").innerHTML.replace('{bookingId}',localStorage.getItem('bookingId'));
-		localStorage.setItem('bookingId',false);
+		var path = 'http://localhost:3000/train/getPrice';
+		var method = 'get';
+		var queryStringObject = {
+			'bId' : localStorage.getItem('bookingId')
+		};
+
+		app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
+			if(statusCode == 200){
+				document.querySelector(".fillId").innerHTML = document.querySelector(".fillId").innerHTML.replace('{booking.id}',localStorage.getItem('bookingId'));
+				document.querySelector(".fillPrice").innerHTML = document.querySelector(".fillPrice").innerHTML.replace('{booking.amount}',responsePayload.price);
+				localStorage.setItem('bookingId',false);
+
+				var button = document.querySelector("button");
+
+				button.addEventListener('click',function(e){
+					window.location = '/index';
+				});
+			}
+		});
 	}
 };
 
@@ -159,20 +196,20 @@ app.loadTrainBookPage = function(){
 				var method = 'get';
 
 				app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
-					if(statusCode == 200){
+					if(statusCode == 200){console.log("OK");
 						//add responsePayload.remainingSeats to html (edit trainBook by adding empty div and using innerHTML)
 						//update train seats according to FROM location (seats add back up after passenger exits his station)
 						//make new table for each booking and subtract all from < this.from when returning remainingSeats
-						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn + boardingOut) (y)
+						//totalSeats from trainSeats - forEachStationBeforeTo (boardingIn) + boardingOut (y)
 						if(responsePayload.remainingSeats > 0){
-							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabel">Available seats<div class="seats">' + responsePayload.remainingSeats + '</div></div><div class="fareLabel">Total fare<div class="fare">' + responsePayload.price + '</div></div><div><button class="train0">Book this train!</button></div>';
+							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabel">Available seats<div class="seats">' + responsePayload.remainingSeats + '</div></div><div class="fareLabel">Fare per head<div class="fare">' + responsePayload.price + '</div></div><div><button class="train0">Book this train!</button></div>';
 						
 							bookTrainButton = document.querySelector("." + train + " button");
 							bookTrainButton.addEventListener('click',function(e){
 								window.location = 'train/passenger?trainId=' + trainId + '&class=' + classOfSeat + '&to=' + queryStringObject.to + '&from=' + queryStringObject.from;
 							});	
 						}
-						else {
+						else {console.log("FAIL");
 							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabelNull">Available seats<div class="seats">0</div></div>';
 
 						}
@@ -203,6 +240,7 @@ app.bindForms = function(){
 		for(var i=0;i<allForms.length;++i){
 			allForms[i].addEventListener('submit', function(e){
 				e.preventDefault();
+				console.log(this);
 				var formId = this.id;
 				var path = this.action;
 				var method = this.method.toUpperCase();
@@ -240,11 +278,12 @@ app.bindForms = function(){
 				//if(app.requestNeeded.indexOf(formId) > -1){
 					app.request(undefined,path,method,queryStringObject,payload,function(statusCode,responsePayload){
 						if(statusCode == 200){
+							console.log(formId);
 							app.formResponse(formId,payload,responsePayload);
 						}
 						else {
 							var error = typeof(responsePayload.Error) == 'string' ? responsePayload.Error : 'An unknown error has occured';
-						
+
 							document.querySelector('#' + formId + ' .error').innerHTML = error;
 							document.querySelector('#' + formId + ' .error').style.display = 'block';
 						}
@@ -277,6 +316,12 @@ app.formResponse = function(formId,requestPayload,responsePayload){
 	else if(formId == 'trainPassenger'){
 		localStorage.setItem('bookingId',responsePayload.bookingId);
 		window.location = 'train/booked';
+	}
+
+	else if(formId == 'trainCancel'){
+		console.log(responsePayload.refund);
+		localStorage.setItem('refund',responsePayload.refund);
+		window.location = 'train/cancelled';
 	}
 }
 

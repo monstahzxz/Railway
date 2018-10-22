@@ -323,4 +323,97 @@ db.classifyTrainStatus = function(trains,callback){
 	});
 };
 
+db.cancel = function(bookingId,callback){
+	var queryString = 'select * from booking where bookingId = ' + bookingId;
+	var refundObject = {};
+	var classPrices = {
+		'GN' : 40,
+		'SL' : 100,
+		'AC' : 200
+	};
+	var mainRow = [];
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err && rows.length > 0){
+			mainRow = rows[0];
+
+			db.getTrainId(mainRow.fromStation,function(err,fromId){
+				db.getTrainId(mainRow.toStation,function(err,toId){
+					var direction = toId - fromId > 0 ? 'up' : 'down';
+					var price = classPrices[mainRow.class] * (direction == 'up' ? toId - fromId : fromId - toId) * mainRow.no_of_passengers;
+					
+					mainRow.date.setTime(mainRow.date.getTime() + (5.5 * 60 * 60 * 1000));
+					
+					var remainingDays = (mainRow.date.getTime() - new Date().getTime())/(1000 * 60 * 60 * 24);
+					
+					refundObject.refund = remainingDays > 7 ? price : price * (remainingDays/7);
+					//DELETE FROM TRAINSEATS
+					queryString = 'update stationsVisited set boardingIn = boardingIn - ' + mainRow.no_of_passengers + ' where trainId = ' + mainRow.trainId + ' and date = "' + JSON.stringify(mainRow.date).split('T')[0].split('"')[1] + '" and class = "' + mainRow.class + '" and stationId = ' + fromId;
+					db.connection.query(queryString, function(err, rows){
+						if(!err){
+							queryString = 'update stationsVisited set boardingOut = boardingOut - ' + mainRow.no_of_passengers + ' where trainId = ' + mainRow.trainId + ' and date = "' + JSON.stringify(mainRow.date).split('T')[0].split('"')[1] + '" and class = "' + mainRow.class + '" and stationId = ' + toId;
+							db.connection.query(queryString, function(err, rows){
+								if(!err){
+									queryString = 'delete from booking where bookingId = ' + bookingId;
+									db.connection.query(queryString, function(err, rows){
+										if(!err){
+											queryString = 'delete from bookingInfo where bookingId = ' + bookingId;
+											db.connection.query(queryString, function(err, rows){
+												if(!err){
+													callback(false,refundObject);
+												}
+												else {
+													callback(500);
+												}
+											});
+										}
+										else {
+											callback(500);
+										}
+									});
+								}
+								else {
+									callback(500);
+								}
+							});
+						}
+						else {
+							callback(500);
+						}
+					});
+				});
+			});
+		}
+		else {
+			callback(404);
+		}
+	});
+};
+
+db.getPrice = function(bookingId,callback){
+	var queryString = 'select * from booking where bookingId = ' + bookingId;
+	var priceObject = {};
+	var classPrices = {
+		'GN' : 40,
+		'SL' : 100,
+		'AC' : 200
+	};
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err){
+			db.getTrainId(rows[0].fromStation,function(err,fromId){
+				db.getTrainId(rows[0].toStation,function(err,toId){
+					var difference = toId > fromId ? toId - fromId : fromId - toId;
+
+					priceObject.price = classPrices[rows[0].class] * rows[0].no_of_passengers * difference;
+					callback(false,priceObject);
+				});
+			});
+		}
+		else {
+			callback(500);
+		}
+	});
+};
+
 module.exports = db;
