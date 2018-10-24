@@ -100,8 +100,37 @@ app.loadDataOnPage = function(){
 	else if(primaryClass == 'trainCancelledPage'){
 		app.loadTrainCancelledPage();
 	}
+	else if(primaryClass == 'accountSettingsPage'){
+		app.loadAccountSettingsPage();
+	}
 };
 
+app.loadAccountSettingsPage = function(){
+	if(app.config.loggedIn == 'false'){
+		app.logUserOut();
+	}
+	else {
+		var queryStringObject = {
+			'username' : app.config.username
+		};
+		var method = 'get';
+		var path = 'http://localhost:3000/users';
+
+		app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
+			if(statusCode == 200){
+				document.getElementsByName("username")[0].value = responsePayload.username;
+				document.getElementsByName("username")[0].style.fontWeight = "bold";
+				document.getElementsByName("name")[0].value = responsePayload.name;
+				document.getElementsByName("email")[0].value = responsePayload.email;
+				document.getElementsByName("phone")[0].value = responsePayload.phone;
+				document.getElementsByName("dob")[0].value = responsePayload.dob;
+			}
+			else {
+				app.logUserOut();
+			}
+		});
+	}
+};
 
 app.loadTrainCancelledPage = function(){
 	if(app.config.loggedIn == 'false'){
@@ -196,7 +225,7 @@ app.loadTrainBookPage = function(){
 				var method = 'get';
 
 				app.request(undefined,path,method,queryStringObject,undefined,function(statusCode,responsePayload){
-					if(statusCode == 200){console.log("OK");
+					if(statusCode == 200){
 						//add responsePayload.remainingSeats to html (edit trainBook by adding empty div and using innerHTML)
 						//update train seats according to FROM location (seats add back up after passenger exits his station)
 						//make new table for each booking and subtract all from < this.from when returning remainingSeats
@@ -209,7 +238,7 @@ app.loadTrainBookPage = function(){
 								window.location = 'train/passenger?trainId=' + trainId + '&class=' + classOfSeat + '&to=' + queryStringObject.to + '&from=' + queryStringObject.from;
 							});	
 						}
-						else {console.log("FAIL");
+						else {
 							document.querySelectorAll("." + train + " div")[5].innerHTML = '<div class="seatsLabelNull">Available seats<div class="seats">0</div></div>';
 
 						}
@@ -240,7 +269,6 @@ app.bindForms = function(){
 		for(var i=0;i<allForms.length;++i){
 			allForms[i].addEventListener('submit', function(e){
 				e.preventDefault();
-				console.log(this);
 				var formId = this.id;
 				var path = this.action;
 				var method = this.method.toUpperCase();
@@ -278,7 +306,6 @@ app.bindForms = function(){
 				//if(app.requestNeeded.indexOf(formId) > -1){
 					app.request(undefined,path,method,queryStringObject,payload,function(statusCode,responsePayload){
 						if(statusCode == 200){
-							console.log(formId);
 							app.formResponse(formId,payload,responsePayload);
 						}
 						else {
@@ -319,9 +346,12 @@ app.formResponse = function(formId,requestPayload,responsePayload){
 	}
 
 	else if(formId == 'trainCancel'){
-		console.log(responsePayload.refund);
 		localStorage.setItem('refund',responsePayload.refund);
 		window.location = 'train/cancelled';
+	}
+
+	else if(formId == 'accountSettings'){
+		window.location = '/index';
 	}
 }
 

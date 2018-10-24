@@ -87,6 +87,34 @@ db.getTime = function(trainId,stationName,callback){
 	});
 };
 
+db.getUser = function(username,callback){
+	var queryString = 'select * from users where username = "' + username + '"';
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err && rows.length > 0){
+			rows[0].dob.setTime(rows[0].dob.getTime() + (5.5 * 60 * 60 * 1000));
+			rows[0].dob = JSON.stringify(rows[0].dob).split('"')[1].split('T')[0];
+			callback(false,rows[0]);
+		}
+		else {
+			callback(404);
+		}
+	});
+};
+
+db.updateUser = function(userData,callback){
+	var queryString = 'update users set name = "' + userData.name + '",email = "' + userData.email + '",phone = ' + userData.phone + ',dob = "' + userData.dob + '" where username = "' + userData.username + '"';
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err){
+			callback(false);
+		}
+		else {
+			callback(500);
+		}
+	});
+};
+
 db.verifyUser = function(username,password,callback){
 	var queryString = 'select * from users where username = "' + username + '" and password = "' + password + '";';
 	
@@ -415,5 +443,70 @@ db.getPrice = function(bookingId,callback){
 		}
 	});
 };
+
+db.getSMSUsers = function(callback){
+	var queryString = 'select * from booking where bookingId NOT IN(select bookingId from smsusers)';
+	var bookingDetails = {};
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err && rows.length > 0){
+			bookingDetails = rows[0];
+			queryString = 'insert into smsusers values(' + bookingDetails.bookingId + ',"' + bookingDetails.username + '")';
+			db.connection.query(queryString, function(err, rows){
+				if(!err){
+					queryString = 'select phone from users where username = "' + bookingDetails.username + '"';
+					db.connection.query(queryString, function(err, rows){
+						if(!err){
+							bookingDetails.phone = rows[0].phone;
+							callback(false,bookingDetails);
+						}
+						else {
+							callback(500);
+						}
+					});
+				}
+				else {
+					callback(500);
+				}
+			});
+		}
+		else {
+			callback(404);
+		}
+	});
+};
+
+db.getCancelUsers = function(callback){
+	var queryString = 'select * from smsusers where bookingId NOT IN(select bookingId from booking)';
+	var bookingDetails = {};
+
+	db.connection.query(queryString, function(err, rows){
+		if(!err && rows.length > 0){
+			bookingDetails = rows[0];
+			queryString = 'delete from smsusers where bookingId = ' + bookingDetails.bookingId;
+			db.connection.query(queryString, function(err, rows){
+				if(!err){
+					queryString = 'select phone from users where username = "' + bookingDetails.username + '"';
+					db.connection.query(queryString, function(err, rows){
+						if(!err){
+							bookingDetails.phone = rows[0].phone;
+							callback(false,bookingDetails);
+						}
+						else {
+							callback(500);
+						}
+					});
+				}
+				else {
+					callback(500);
+				}
+			});
+		}
+		else {
+			callback(404);
+		}
+	});
+};
+
 
 module.exports = db;

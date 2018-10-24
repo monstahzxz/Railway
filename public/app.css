@@ -115,6 +115,39 @@ body {
 	border-radius: 10px;
 }
 
+.accountSettings {
+	border-radius: 50px;
+	margin: 200px 400px 0px 400px;
+	background-color: #fff;
+	color: #003366;
+	opacity: 0.8;
+	text-align: center;
+}
+
+.accountSettings .error {
+	display: none;
+	font-weight: bold;
+	background-color: #400;
+	margin: 0px 60px 0px 60px;
+	padding : 4px 0px 4px 0px;
+	border-radius: 50px;
+	color: #f00;
+}
+
+.accountSettings button {
+	background-color: #006600;
+	padding: 10px 10px 10px 10px;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	margin: 10px 4px 4px 4px;
+}
+
+.accountSettings input {
+	background-color: #aaa;
+	border-radius: 10px;
+}
+
 .sidebar {
 	position: fixed;
 	width: 200px;
@@ -541,4 +574,14 @@ body {
 	border: none;
 	border-radius: 10px;
 	margin: 4px 4px 4px 4px;
+}
+
+.trainCancel .error {
+	display: none;
+	font-weight: bold;
+	background-color: #400;
+	margin: 0px 60px 0px 60px;
+	padding : 4px 0px 4px 0px;
+	border-radius: 50px;
+	color: #f00;
 }

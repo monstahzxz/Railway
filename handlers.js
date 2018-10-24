@@ -150,6 +150,23 @@ handlers.accountCreate = function(data, callback){
 	}
 };
 
+handlers.accountSettings = function(data, callback){
+	if(data.method == 'get'){
+		var templateData = {
+			'body.class' : 'accountSettingsPage'
+		};
+
+		helpers.getTemplate('accountSettings',templateData,function(err,templateStr){
+			if(!err && templateStr){
+				callback(200,templateStr,'html');
+			}
+			else {
+				callback(404);
+			}
+		});
+	}
+};
+
 handlers.trainSearch = function(data, callback){
 	if(data.method == 'get'){
 		helpers.getTemplate('trainSearch',{},function(err,templateStr){
@@ -179,45 +196,50 @@ handlers.trainBook = function(data, callback){
 	};
 	var done = 0;
 
-	if(trainData.from && trainData.to && trainData.date){
-		helpers.trainList(trainData,function(err,trainsObject){
-			if(!err && trainsObject){
-				trainsObject.forEach(function(train){
-					db.getTime(train.trainId,trainData.to,function(arrival){
-						db.getTime(train.trainId,trainData.from,function(departure){
-							helpers.trainDuration(arrival,departure,function(duration){
-								helpers.fillTrainListForm(train,arrival,departure,duration,done,function(string){
-									templateData.trains += string;
-									done++;
+	if(new Date(trainData.date).getTime() - new Date().getTime() > 0){
+		if(trainData.from && trainData.to && trainData.date){
+			helpers.trainList(trainData,function(err,trainsObject){
+				if(!err && trainsObject){
+					trainsObject.forEach(function(train){
+						db.getTime(train.trainId,trainData.to,function(arrival){
+							db.getTime(train.trainId,trainData.from,function(departure){
+								helpers.trainDuration(arrival,departure,function(duration){
+									helpers.fillTrainListForm(train,arrival,departure,duration,done,function(string){
+										templateData.trains += string;
+										done++;
 
-									if(data.method == 'get'){
-										if(done == trainsObject.length){
-											helpers.getTemplate('trainBook',templateData,function(err,templateStr){
-												if(!err && templateStr){
-													callback(200,templateStr,'html');
-												}
-												else {
-													callback(404);
-												}
-											});
+										if(data.method == 'get'){
+											if(done == trainsObject.length){
+												helpers.getTemplate('trainBook',templateData,function(err,templateStr){
+													if(!err && templateStr){
+														callback(200,templateStr,'html');
+													}
+													else {
+														callback(404);
+													}
+												});
+											}
 										}
-									}
-									else {
-										callback(405);
-									}
+										else {
+											callback(405);
+										}
+									});
 								});
 							});
 						});
 					});
-				});
-			}
-			else {
-				callback(404,{'Error' : 'No trains found!'});
-			}
-		});		
+				}
+				else {
+					callback(404,{'Error' : 'No trains found!'});
+				}
+			});		
+		}
+		else {
+			callback(400,{'Error' : 'Missing or invalid data'});
+		}
 	}
 	else {
-		callback(400,{'Error' : 'Missing or invalid data'});
+		callback(400,{'Error' : 'Invalid date'});
 	}
 };
 
@@ -332,7 +354,7 @@ handlers._users.post = function(data, callback){
 	var name = typeof(data.payload.name) == 'string' ? data.payload.name.trim() : false;
 	var email = typeof(data.payload.email) == 'string' ? data.payload.email.trim() : false;
 	var phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 10 ? data.payload.phone.trim() : false;
-	var gender = typeof(data.payload.gender) == 'string' && data.payload.gender.trim().length == 1 ?  data.payload.gender.trim().length : false;
+	var gender = typeof(data.payload.gender) == 'string' && data.payload.gender.trim().length == 1 ?  data.payload.gender.trim() : false;
 	var dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
 
 	var userData = {
@@ -363,6 +385,53 @@ handlers._users.post = function(data, callback){
 	}
 	else {
 		callback(400,{'Error' : 'Missing required fields'});
+	}
+};
+
+handlers._users.get = function(data, callback){
+	var username = typeof(data.queryStringObject.username) == 'string' ? data.queryStringObject.username : false;
+
+	if(username){
+		db.getUser(username,function(err,userDetails){
+			if(!err){
+				delete userDetails.password;
+				callback(200,userDetails,'json');
+			}
+			else {
+				callback(404,{"Error" : "User not found"});
+			}
+		});
+	}
+};
+
+handlers.userUpdate = function(data, callback){
+	var username = typeof(data.payload.username) == 'string' ? data.payload.username.trim() : false;
+	var name = typeof(data.payload.name) == 'string' ? data.payload.name.trim() : false;
+	var email = typeof(data.payload.email) == 'string' ? data.payload.email.trim() : false;
+	var phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length == 10 ? data.payload.phone.trim() : false;
+	var dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
+
+	var userData = {
+		'username' : username,
+		'name' : name,
+		'email' : email,
+		'phone' : phone,
+		'dob' : dob
+	};
+
+	if(username &&
+		name &&
+		email &&
+		phone &&
+		dob){
+		db.updateUser(userData,function(err){
+			if(!err){
+				callback(200);
+			}
+			else {
+				callback(500);
+			}
+		});
 	}
 };
 
@@ -450,7 +519,7 @@ handlers.trainCancel = function(data, callback){
 				callback(200,refundObject,'json');
 			}
 			else {
-				if(err == 400){
+				if(err == 404){
 					callback(404,{"Error" : "Invalid booking ID"});
 				}
 				else {

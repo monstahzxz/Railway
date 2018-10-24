@@ -107,6 +107,7 @@ server.router = {
 	'public' : handlers.public,
 	'users' : handlers.users,
 	'users/login' : handlers.userLogin,
+	'users/update' : handlers.userUpdate,
 	'account/create' : handlers.accountCreate,
 	'account/login' : handlers.login,
 	'train/search' : handlers.trainSearch,
@@ -120,7 +121,8 @@ server.router = {
 	'cancel' : handlers.cancel,
 	'train/cancel' : handlers.trainCancel,
 	'train/cancelled' : handlers.trainCancelled,
-	'train/getPrice' : handlers.trainGetPrice
+	'train/getPrice' : handlers.trainGetPrice,
+	'account/settings' : handlers.accountSettings
 };
 
 

@@ -1,13 +1,9 @@
-<div class="accountCreate">
-	<h1>Create your account</h1>
-	<form id="accountCreate" action="/users" method="POST">
+<div class="accountSettings">
+	<h1>Update your account</h1>
+	<form id="accountSettings" action="/users/update" method="POST">
 		<div class="inputWrapper">
 			<div class="inputLabel">Username:</div>
-			<input type="text" name="username" autocomplete="off"/>
-		</div>
-		<div class="inputWrapper">
-			<div class="inputLabel">Password:</div>
-			<input type="password" name="password" placeholder="1234?"/>
+			<input type="text" name="username" autocomplete="off" readonly/>
 		</div>
 		<div class="inputWrapper">
 			<div class="inputLabel">Name:</div>
@@ -22,17 +18,11 @@
 			<input type="text" name="phone" autocomplete="off"/>
 		</div>
 		<div class="inputWrapper">
-			<div class="inputLabel">Gender:</div>
-			<input type="radio" name="gender" value="M"/>Male
-			<input type="radio" name="gender" value="F"/>Female
-			<input type="radio" name="gender" value="O"/>Other
-		</div>
-		<div class="inputWrapper">
 			<div class="inputLabel">Date of Birth:</div>
 			<input type="date" name="dob"/>
 		</div>
 		<div class="inputWrapper">
-			<button type="submit">SIGNUP</button>
+			<button type="submit">UPDATE</button>
 		</div>
 		<div class="error">
 		</div>	
